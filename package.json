@@ -1,0 +1,26 @@
+{
+  "name": "nuxt-app",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "@nuxt/icon": "latest",
+    "@unocss/nuxt": "latest",
+    "@unocss/reset": "latest",
+    "nuxt": "latest",
+    "unocss": "latest",
+    "vue": "latest",
+    "@vaxee/nuxt": "latest"
+  },
+  "devDependencies": {
+    "@iconify-json/fluent": "latest",
+    "grapesjs": "latest",
+    "grapesjs-preset-webpage": "latest"
+  }
+}
