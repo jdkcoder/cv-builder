@@ -1,12 +1,13 @@
 
 import grapesjs from 'grapesjs';
 import webPagePreset from 'grapesjs-preset-webpage'
-import Text from '../components/Text.vue'
-import Row from '../components/Row.vue'
+import Text from '../components/blocks/Text.vue'
+import Row from '../components/blocks/Row.vue'
 
 
-export const editorStore = createStore("editor", ({ state, getter }) => {
+export const editorStore = createStore("grapesjs-editor", ({ state }) => {
    const instance = state(null, { shallow: true })
+   const grapesEl = state(null, { shallow: true })
 
    const canvas = state(null, { shallow: true })
    const blocks = state(null, { shallow: true })
@@ -19,9 +20,9 @@ export const editorStore = createStore("editor", ({ state, getter }) => {
 
    const outlineShown = state(false, { shallow: false })
 
-   function init(container) {
+   function init() {
       const editor = grapesjs.init({
-         container,
+         container: grapesEl.value,
          height: '100dvh',
          fromElement: true,
          plugins: [webPagePreset],
@@ -33,14 +34,8 @@ export const editorStore = createStore("editor", ({ state, getter }) => {
          styleManager: { clearProperties: 1, appendTo: '#styles', },
       })
 
+      setVars(editor)
 
-      canvas.value = editor.Canvas
-      panels.value = editor.Panels
-      blocks.value = editor.BlockManager
-      traits.value = editor.TraitManager
-      styles.value = editor.StyleManager
-      selectors.value = editor.SelectorManager
-      layers.value = editor.LayerManager
 
       editor.addComponents({
          tagName: 'div',
@@ -81,19 +76,11 @@ export const editorStore = createStore("editor", ({ state, getter }) => {
          }
       })
 
-      panels.value.removePanel('devices-c')
-      panels.value.removePanel('options')
-      panels.value.removePanel('views')
 
 
       editor.on('load', (ctx) => {
-         const { editor } = ctx
-
-         const unocss = document.createElement('script')
-         unocss.src = 'https://cdn.jsdelivr.net/npm/@unocss/runtime';
-         editor.Canvas.getDocument().head.appendChild(unocss)
-         document.querySelector('[data-states-c]').remove()
-         document.querySelector('.gjs-clm-sels-info').remove()
+         loadUnoCSS(ctx)
+         removeUnecessary()
       })
 
 
@@ -103,8 +90,43 @@ export const editorStore = createStore("editor", ({ state, getter }) => {
       instance.value = editor
    }
 
+
+   function reRender() {
+      instance.value.destroy()
+      init(grapesEl.value)
+   }
+
+
+   function removeUnecessary() {
+      panels.value.removePanel('devices-c')
+      panels.value.removePanel('options')
+      panels.value.removePanel('views')
+
+      document.querySelector('[data-states-c]').remove()
+      document.querySelector('.gjs-clm-sels-info').remove()
+   }
+
+
+   function loadUnoCSS({ editor } = {}) {
+      const unocss = document.createElement('script')
+      unocss.src = 'https://cdn.jsdelivr.net/npm/@unocss/runtime';
+      editor.Canvas.getDocument().head.appendChild(unocss)
+   }
+
+
+   function setVars(editor) {
+
+      canvas.value = editor.Canvas
+      panels.value = editor.Panels
+      blocks.value = editor.BlockManager
+      traits.value = editor.TraitManager
+      styles.value = editor.StyleManager
+      selectors.value = editor.SelectorManager
+      layers.value = editor.LayerManager
+   }
+
    return {
-      instance, init,
+      grapesEl, instance, init, reRender,
       canvas, panels, blocks, traits, styles, selectors, layers,
       outlineShown
    };

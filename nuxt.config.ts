@@ -6,5 +6,6 @@ export default defineNuxtConfig({
     compatibilityVersion: 4
   },
   css: ['@unocss/reset/tailwind.css', './assets/styles/grapes.css'],
-  modules: ['@unocss/nuxt', '@nuxt/icon', '@vaxee/nuxt']
+  modules: ['@unocss/nuxt', '@nuxt/icon', '@vaxee/nuxt'],
+  components: [{ path: '~/components', pathPrefix: false }],
 })
