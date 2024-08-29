@@ -48,7 +48,6 @@ function preview() {
 
 function clearAll() {
    if (confirm('Are you sure you want to clear the canvas?')) {
-      instance.value.DomComponents.clear()
       localStorage.clear()
       reRender()
    }
